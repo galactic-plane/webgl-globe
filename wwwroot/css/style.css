@@ -1,0 +1,79 @@
+* {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+}
+
+body {
+  background: radial-gradient(black, #111111);
+  overflow: hidden;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+nav ul a,
+nav .brand-logo {
+  color: #ffffff;
+}
+
+p {
+  line-height: 2rem;
+}
+
+.sidenav-trigger {
+  color: #ffffff;
+}
+
+.statbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.7;  
+  z-index: 5000;
+}
+
+.characterbar {
+  width: 350px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0.8;
+  z-index: 5000;
+}
+
+.icon-block {
+  padding: 0 15px;
+}
+
+.icon-block .material-icons {
+  font-size: inherit;
+}
+
+footer.page-footer {
+  margin: 0;
+}
+
+#data-rows {
+  display: block;
+  height: 150px;
+  overflow: auto;
+}
+
+thead,
+tfoot,
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
