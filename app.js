@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 
 // Mongoose Database Service
 const mongoose = require('mongoose');
-const connection = 'mongodb://localhost:27017/globewardb';
+const connection = (process.env.MongoAtlasConnection || 'mongodb://localhost:27017/globewardb');
 
 // GlobeWar Schema
 const globeWarSchema = new mongoose.Schema({
