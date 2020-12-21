@@ -7,7 +7,7 @@
 ## Github Version:
 > ##### Runs static html assets only
 
-[https://iturea.github.io/webgl-globe/wwwroot/index.html](https://iturea.github.io/webgl-globe/wwwroot/index.html)
+[https://galactic-plane.github.io/webgl-globe/wwwroot/index.html](https://galactic-plane.github.io/webgl-globe/wwwroot/index.html)
 
 ## Heroku Version:
 > ##### Runs via node.js/express served up on heroku and stores stats via mongo atlas
@@ -32,7 +32,7 @@ WebGL Globe is a cloud-enabled (via the cloud bump map :P), mobile-ready (if you
 Use [git](https://git-scm.com/downloads) to install webgl-globe.
 
 ```bash
-$ git clone https://github.com/Iturea/webgl-globe.git
+$ git clone https://github.com/galactic-plane/webgl-globe.git
 ```
 ## Install
 In the webgl-globe directory run:
