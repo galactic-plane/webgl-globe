@@ -17,9 +17,6 @@
 ![Heroku Version](frozenbasin.png)
 
 ## Learn More:
-> ##### Detailed information on how globe was made 
-
-[https://penrodtech.wixsite.com/blog/post/webgl-globe-bezier-curves-and-particle-effects](https://penrodtech.wixsite.com/blog/post/webgl-globe-bezier-curves-and-particle-effects)
 
 WebGL Globe is a cloud-enabled (via the cloud bump map :P), mobile-ready (if you want), earth powered HTML5/THREE.JS app.
 
