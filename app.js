@@ -116,5 +116,6 @@ app.post('/api/addstat', function (req, res) {
 
 // Add port for Heroku with 3000 for local
 app.listen(process.env.PORT || 3000, function () {
-    console.log('started `node ./app.js`');
+    console.log('started `node ./app.js');
+    console.log('listening at: http://localhost:3000');
 });

@@ -4,20 +4,18 @@
   "description": "A study of the behavior of bezier curves connecting points on a sphere. Particle effects cycles around the curve. A spike is created and marks the point of impact. Performance is measured in the table below if your browser support that.",
   "main": "index.js",
   "engines": {
-    "node": "14.5.0"
+    "node": "16.14.2"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "jquery": "^3.5.1",
     "materialize-css": "^1.0.0-rc.2",
-    "mongoose": "^5.9.25",
-    "nodemon": "^2.0.4",
+    "mongoose": "^6.2.9",
     "save": "^2.4.0",
     "superheroes": "^3.0.0",
     "supervillains": "^3.0.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

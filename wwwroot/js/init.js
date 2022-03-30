@@ -80,7 +80,7 @@ let globeObj = null,
       createjs.Sound.play(event.src);
     }
 
-    function loadSound (file, soundId) {
+    function loadSound(file, soundId) {
       createjs.Sound.registerSound('/sounds/' + file, soundId);
     }
 
@@ -90,18 +90,18 @@ let globeObj = null,
       }
       var audioPath = '/sounds/';
       var sounds = [{
-          id: 'music',
-          src: 'M-GameBG.ogg'
-        }, {
-          id: 'shot',
-          src: 'shot.ogg'
-        }
+        id: 'music',
+        src: 'M-GameBG.ogg'
+      }, {
+        id: 'shot',
+        src: 'shot.ogg'
+      }
       ];
 
       createjs.Sound.alternateExtensions = ['mp3'];
       createjs.Sound.on('fileload', handleLoad);
       createjs.Sound.registerSounds(sounds, audioPath);
-    }    
+    }
 
     function showDominatorWindow() {
       // Show dominator ladder
@@ -118,7 +118,7 @@ let globeObj = null,
       data.date = date;
       data.type = type;
 
-      loadSound ('Game-Death.ogg', 'gamedeath');
+      loadSound('Game-Death.ogg', 'gamedeath');
 
       $.ajax({
         url: '/api/addstat',
@@ -177,7 +177,7 @@ let globeObj = null,
     }
 
     function declareWinner() {
-      $('#play').click(function (e) {
+      $('#play').on('click', function (e) {
         window.location.reload(true);
       });
       globeObj.stopFlying();
@@ -196,16 +196,16 @@ let globeObj = null,
         loser = hero;
         spikes = villainspikes;
       }
-      postStat(winner, spikes, loser, new Date(), charactertype);   
-      fadeOutInterval = setInterval(function() {
+      postStat(winner, spikes, loser, new Date(), charactertype);
+      fadeOutInterval = setInterval(function () {
         if (volume <= 0) {
           window.clearInterval(fadeOutInterval);
         }
         console.log('test');
         volume = volume - 0.1;
         createjs.Sound.volume = volume;
-      }, 500);   
-      window.setTimeout(function () {       
+      }, 500);
+      window.setTimeout(function () {
         createjs.Sound.stop();
       }, 8000);
     }
@@ -230,7 +230,7 @@ let globeObj = null,
       let characterIsSet = characterSet();
       // starting point
       let originate = [];
-      if (characterIsSet === true) {   
+      if (characterIsSet === true) {
         createjs.Sound.play("shot");
         // battle of north vs south poles
         if (charactertype == 'villain') {
@@ -274,7 +274,7 @@ let globeObj = null,
       }
       // random line color
       let color = new THREE.Color(0xffffff);
-      if (characterIsSet === true) {        
+      if (characterIsSet === true) {
         if (charactertype == 'villain') {
           color = new THREE.Color('red');
         } else {
@@ -298,7 +298,7 @@ let globeObj = null,
         let duration = globeObj.duration();
         let percentCharge = (duration / overhead) * 1000;
         $('#data-rows').append('<tr><td>' + spikes + '</td><td>' + overhead.toFixed(2) + '</td><td>' + duration.toFixed(2) + '</td><td>' + percentCharge.toFixed(2) + '</td></tr>');
-        if (characterIsSet === true) {          
+        if (characterIsSet === true) {
           let damage = (percentCharge * 5 + spikes);
           $('#heroImage').removeClass('pulse');
           $('#villainImage').removeClass('pulse');
@@ -366,7 +366,7 @@ let globeObj = null,
           $('#overhead').addClass('red').addClass('pulse').removeClass('green').removeClass('orange');
         }
       }
-    }    
+    }
 
     function main() {
       if (villain === null || hero === null) {
@@ -396,7 +396,7 @@ let globeObj = null,
         if (count > rununtil) {
           stopInterval();
           stopMainProgress();
-        } else {         
+        } else {
           executeMove();
         }
         count++;
@@ -406,29 +406,29 @@ let globeObj = null,
     // set
     initNode(setHero);
     initNode(setvillain);
-    initbgsound();    
+    initbgsound();
 
     window.setTimeout(function () {
       main();
     }, 1000);
 
-    $('#refresh').click(function () {
+    $('#refresh').on('click',function () {
       window.location.reload(true);
     });
 
-    $('#stop').click(function () {
+    $('#stop').on('click',function () {
       if (globeObj.isFlying()) {
         globeObj.stopFlying();
       }
     });
 
-    $('#play').click(function () {
+    $('#play').on('click',function () {
       if (!globeObj.isFlying()) {
         globeObj.startFlying();
       }
     });
 
-    $('#dominatorWinToggle').click(function () {
+    $('#dominatorWinToggle').on('click',function () {
       showDominatorWindow();
     });
 
