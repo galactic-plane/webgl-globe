@@ -5,14 +5,16 @@
  */
 
 (function (globals) {
-  "use strict";
+  'use strict';
 
-  let global_EarthMaterialURL = "img/4k/sceneType/earth.png";
-  let global_BumpMapMaterialURL = "img/4k/normal/elev_bump.jpg";
-  let global_SpecularMapMaterialURL = "img/4k/frozen/water.png";
-  let global_CloudMaterialURL = "img/4k/normal/fair_clouds.png";
-  let global_StarFieldURL = "img/4k/sceneType/galaxy_starfield.png";
-  let global_ParticleURL = "img/particle4u.png";
+  let global_EarthMaterialURL = 'img/4k/sceneType/earth.png';
+  let global_BumpMapMaterialURL = 'img/4k/normal/elev_bump.jpg';
+  let global_SpecularMapMaterialURL = 'img/4k/frozen/water.png';
+  let global_CloudMaterialURL = 'img/4k/normal/fair_clouds.png';
+  let global_StarFieldURL = 'img/4k/sceneType/galaxy_starfield.png';
+  let global_ParticleURL = 'img/particle4u.png';
+  let THREE = window.THREE || null;
+  let Detector = window.Detector || null;
 
   // Set up namespace
   let DAT = (globals.DAT = {
@@ -56,20 +58,11 @@
       tweens = [];
 
     // Define point objects
-    let point,
-      pointData = [],
-      baseGeometry;
+    let baseGeometry;
 
     // Define color options
     opts = opts || {};
-    let colorFn =
-      opts.colorFn ||
-      function (x) {
-        let c = new THREE.Color();
-        c.setHSL(0.441 + x / 2, 0.6, 0.75);
-        return c;
-      };
-
+    
     // Ensure browser is compliant
     if (!Detector.webgl) {
       Detector.addGetWebGLMessage(container);
@@ -164,7 +157,7 @@
           specularMap: new THREE.TextureLoader().load(
             global_SpecularMapMaterialURL
           ),
-          specular: new THREE.Color("#444444"),
+          specular: new THREE.Color('#444444'),
           transparent: false,
         })
       );
@@ -191,16 +184,6 @@
     }
 
     /* Tween Methods */
-
-    // Linear
-    function tweenFnLinear(elapsed) {
-      return elapsed;
-    }
-
-    // Ease In
-    function tweenFnEaseIn(elapsed) {
-      return elapsed * elapsed * elapsed * elapsed;
-    }
 
     // Ease Out
     function tweenFnEaseOut(elapsed) {
@@ -270,8 +253,6 @@
     // Takes two points on the globe and turns them into a bezier curve point array
     function bezierCurveBetween(startVec3, endVec3) {
       let distanceBetweenPoints = startVec3.clone().sub(endVec3).length();
-
-      let anchorHeight = radius + distanceBetweenPoints * 1.5;
 
       let mid = startVec3.clone().lerp(endVec3, 0.5);
       let midLength = mid.length();
@@ -353,73 +334,7 @@
         return v;
       }
       return v;
-    }
-
-    function createPointGeometry() {
-      let geometry = new THREE.BoxGeometry(1, 1, 1);
-      geometry.applyMatrix(new THREE.Matrix4().makeTranslation(0, 0, -0.5));
-      point = new THREE.Mesh(geometry);
-    }
-
-    function addDataPoint(data) {
-      let lat, lng, size, color, i, step, colorFnWrapper;
-
-      step = 3;
-      colorFnWrapper = function (data, i) {
-        return colorFn(date[i + 2]);
-      };
-
-      let subgeo = new THREE.Geometry();
-
-      for (i = 0; i < data.length; i += step) {
-        lat = data[i];
-        lng = data[i + 1];
-        color = colorFnWrapper(date, i);
-        size = data[i + 2];
-        size = size * 200;
-        addPoint(lat, lng, size, color, subgeo);
-      }
-
-      baseGeometry = subgeo;
-    }
-
-    function addPoint(lat, lng, size, color, subgeo) {
-      let cord = latLonToVector3(lat, lng);
-
-      point.position.x = cord.x;
-      point.position.y = cord.y;
-      point.position.z = cord.z;
-
-      point.lookAt(sphere.position);
-
-      point.scale.z = Math.max(size, 0.1);
-      point.updateMatrix();
-
-      for (let i = 0; i < point.geometry.faces.length; i++) {
-        point.geometry.faces[i].color = color;
-      }
-
-      if (point.matrixAutoUpdate) {
-        point.updateMatrix();
-      }
-
-      subgeo.merge(point.geometry, point.matrix);
-    }
-
-    function getProjectedPosition(width, height, position) {
-      /*
-  Using the coordinates of a country in the 3D space, this function will
-  return the 2D coordinates using the camera projection method
-  */
-
-      position = position.clone();
-      let projected = position.project(camera.object);
-
-      return {
-        x: projected.x * width + width,
-        y: -(projected.y * height) + height,
-      };
-    }
+    } 
 
     // Generate a set of colors to use
     (function () {
@@ -551,8 +466,7 @@
     };
 
     this.removeTweenLines = function () {
-      let i = tweens.length,
-        now = Date.now();
+      let i = tweens.length;
       while (i--) {
         let tween = tweens[i];
         let line = tween.line;
@@ -574,8 +488,8 @@
     };
 
     this.addData = function (originate, marks) {
-      const addDataStartMarker = "add-data-start-marker";
-      const addDataEndMarker = "add-data-end-marker";
+      const addDataStartMarker = 'add-data-start-marker';
+      const addDataEndMarker = 'add-data-end-marker';
 
       if (performance && performance.measure) {
         // Start Marker
@@ -684,24 +598,24 @@
 
         // Create a variety of measurements.
         performance.measure(
-          "measure add-data-start-marker to add-data-end-marker",
+          'measure add-data-start-marker to add-data-end-marker',
           addDataStartMarker,
           addDataEndMarker
         );
         performance.measure(
-          "measure add-data-start-marker to now",
+          'measure add-data-start-marker to now',
           addDataStartMarker
         );
         performance.measure(
-          "measure from navigation start to add-data-end-marker",
+          'measure from navigation start to add-data-end-marker',
           undefined,
           addDataEndMarker
         );
-        performance.measure("measure from the start of navigation to now");
+        performance.measure('measure from the start of navigation to now');
 
         // Pull out all of the measurements.
-        _overhead = performance.getEntriesByType("measure")[0].duration;
-        _duration = performance.getEntriesByType("measure")[2].duration;
+        _overhead = performance.getEntriesByType('measure')[0].duration;
+        _duration = performance.getEntriesByType('measure')[2].duration;
 
         // Finally, clean up the entries.
         performance.clearMarks();

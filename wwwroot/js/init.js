@@ -9,6 +9,12 @@ let globeObj = null,
   isNodeRunning = false,
   sceneType = 'normal';
 
+let createjs = window.createjs || null;
+let THREE = window.THREE || null;
+let jQuery = window.jQuery || null;
+let M = window.M || null;
+let DAT = window.DAT || null;
+
 (function ($) {
   $(function () {
 
@@ -177,7 +183,7 @@ let globeObj = null,
     }
 
     function declareWinner() {
-      $('#play').on('click', function (e) {
+      $('#play').on('click', function () {
         window.location.reload(true);
       });
       globeObj.stopFlying();
@@ -231,7 +237,7 @@ let globeObj = null,
       // starting point
       let originate = [];
       if (characterIsSet === true) {
-        createjs.Sound.play("shot");
+        createjs.Sound.play('shot');
         // battle of north vs south poles
         if (charactertype == 'villain') {
           // south pole
@@ -412,23 +418,23 @@ let globeObj = null,
       main();
     }, 1000);
 
-    $('#refresh').on('click',function () {
+    $('#refresh').on('click', function () {
       window.location.reload(true);
     });
 
-    $('#stop').on('click',function () {
+    $('#stop').on('click', function () {
       if (globeObj.isFlying()) {
         globeObj.stopFlying();
       }
     });
 
-    $('#play').on('click',function () {
+    $('#play').on('click', function () {
       if (!globeObj.isFlying()) {
         globeObj.startFlying();
       }
     });
 
-    $('#dominatorWinToggle').on('click',function () {
+    $('#dominatorWinToggle').on('click', function () {
       showDominatorWindow();
     });
 
