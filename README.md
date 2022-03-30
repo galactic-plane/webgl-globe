@@ -39,7 +39,7 @@ $ npm install
 ## Run Local 
 [Node.js](https://nodejs.org/en/download/) :zap: [Express](https://expressjs.com/en/starter/installing.html) :zap: [Nodemon](https://www.npmjs.com/package/nodemon)
 ```bash
-$ nodemon app.js localhost 3000
+$ nodemon app.js
 ```
 ## Usage
 
