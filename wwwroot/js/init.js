@@ -373,17 +373,19 @@ let DAT = window.DAT || null;
     }
 
     function main() {
-      if (villain === null || hero === null) {
-        isNodeRunning = false;
-        sceneType = "normal";
-        villain = "";
-        hero = "";
-      } else {
+      const isNode = typeof process !== "undefined" && process.versions != null && process.versions.node != null;
+
+      if (isNode) {
         $("#villainname").html(villain);
         $("#heroname").html(hero);
         $(".characterbar").show();
         isNodeRunning = true;
         sceneType = "frozen";
+      } else {
+        isNodeRunning = false;
+        sceneType = "normal";
+        villain = "";
+        hero = "";
       }
       let container = document.getElementById("globe");
       globeObj = new DAT.Globe(container, {
