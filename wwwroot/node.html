@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebGL Globe</title>
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
+</head>
+
+<body>
+  <div class="statbar hide-on-med-and-down">
+    <div class="row">
+      <div class="col m3">
+        <div class="card black">
+          <div class="card-content white-text">
+            <span class="card-title"><i class="material-icons">explore</i> WebGL Globe</span>
+            <p>
+              - by Daniel Penrod
+              <br>
+              A study of the behavior of bezier curves connecting points on a
+              sphere. Particle effects cycles around the curve. A spike is
+              created and marks the point of impact. Performance is measured
+              in the table below if your browser supports that.
+            </p>
+            <br />
+            <div>
+              <div class="left">
+                Spike Overload
+                <div class="switch">
+                  <label>
+                    Off
+                    <input id="spikeswitch" type="checkbox" />
+                    <span class="lever"></span>
+                    On
+                  </label>
+                </div>
+              </div>
+              <div class="right">
+                <a id="refresh" class="btn-floating btn waves-effect waves-light blue"><i
+                    class="material-icons">autorenew</i></a>
+                <a id="stop" class="btn-floating btn waves-effect waves-light red"><i
+                    class="material-icons">stop</i></a>
+                <a id="play" class="btn-floating btn waves-effect waves-light green"><i
+                    class="material-icons">play_arrow</i></a>
+              </div>
+            </div>
+            <br /><br /><br />
+            <div class="progress">
+              <div class="indeterminate"></div>
+            </div>
+            <br />
+            <table>
+              <thead>
+                <tr>
+                  <th>Spikes</th>
+                  <th>Overhead</th>
+                  <th>Duration</th>
+                  <th>%Charge</th>
+                </tr>
+              </thead>
+              <tbody id="data-rows"></tbody>
+              <tfoot>
+                <tr>
+                  <th>
+                    <span id="spikes" class="new badge green" data-badge-caption="">0</span>
+                  </th>
+                  <th>
+                    <span id="overhead" class="new badge green" data-badge-caption="">0</span>
+                  </th>
+                  <th>
+                    <span id="duration" class="new badge green" data-badge-caption="">0</span>
+                  </th>
+                  <th>
+                    <span id="charge" class="new badge green" data-badge-caption="%">0</span>
+                  </th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="card-action">
+            <span id="runs" class="new badge green" data-badge-caption="Runs">0</span>
+            <a href="https://www.firefox.com" target="_blank" rel="noopener"><img src="img/firefox.png" title="Firefox Logo"
+                            class="firefox-logo" /></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="globe"></div>
+  <div class="characterbar hide-on-med-and-down">
+    <div class="row">
+      <div class="col s12">
+        <div class="card black">
+          <div class="card-image">
+            <img src="img/frozenbasin.png" alt="Frozen Basin">
+            <a id="dominatorWinToggle" class="btn-floating halfway-fab waves-effect waves-light red"><i
+                class="material-icons">open_in_browser</i></a>
+          </div>
+          <div class="card-content white-text">
+            <div class="row valign-wrapper">
+              <div class="col s2">
+                <a id="heroImage" class="btn-floating blue"><img src="img/hero.png" alt=""
+                    class="circle responsive-img"></a>
+              </div>
+              <div class="col s10 white-text">
+                Name: <span id="heroname"></span>
+                <div class="progress">
+                  <div id='heroProgress' class="determinate red determinate-red"></div>
+                </div>
+                <span id="heroStats" class="new badge" data-badge-caption="Health">100%</span>
+              </div>
+            </div>
+            <div class="row valign-wrapper">
+              <div class="col s2">
+                <a id="villainImage" class="btn-floating red"><img src="img/villain.png" alt=""
+                    class="circle responsive-img"></a>
+              </div>
+              <div class="col s10 white-text">
+                Name: <span id="villainname"></span>
+                <div class="progress">
+                  <div id='villainProgress' class="determinate red villain-progress"></div>
+                </div>
+                <span id="villainStats" class="new badge" data-badge-caption="Health">100%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal Structure -->
+        <div id="winnerModal" class="modal modal-fixed-footer">
+          <div class="modal-content">
+            <h4>Top Dominators</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Spikes</th>
+                </tr>
+              </thead>
+              <tbody id="toptenlist">
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--  Scripts-->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/three.min.js"></script>
+  <script src="js/Detector.js"></script>
+  <script src="js/Tween.js"></script>
+  <script src="js/OrbitControls.js"></script>
+  <script src="js/globe.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/node.js"></script>
+</body>
+
+</html>
