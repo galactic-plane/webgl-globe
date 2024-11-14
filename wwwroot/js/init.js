@@ -1,13 +1,13 @@
 /**
  * @author Daniel Penrod (Iturea) / https://github.com/Iturea
- * 
+ *
  * released under MIT License (MIT)
  */
 
 let globeObj = null,
   winnerModalWindow = null,
   isNodeRunning = false,
-  sceneType = 'normal';
+  sceneType = "normal";
 
 let createjs = window.createjs || null;
 let THREE = window.THREE || null;
@@ -17,8 +17,7 @@ let DAT = window.DAT || null;
 
 (function ($) {
   $(function () {
-
-    'use strict';
+    "use strict";
 
     let interval = null,
       fadeOutInterval = null,
@@ -33,7 +32,7 @@ let DAT = window.DAT || null;
       herospikes = 0,
       villainspikes = 0,
       character = null,
-      charactertype = '',
+      charactertype = "",
       heroDamage = 0,
       villainDamage = 0;
 
@@ -44,41 +43,41 @@ let DAT = window.DAT || null;
           executeCallBack();
         }
       };
-      xhttp.open('GET', '/api/ping', true);
+      xhttp.open("GET", "/api/ping", true);
       xhttp.send();
     }
 
     function setHero() {
       $.ajax({
-        url: '/api/gethero',
+        url: "/api/gethero",
         success: function (data) {
           hero = data;
         },
         fail: function (xhr, status, error) {
           if (error) {
-            console.log('process error: ' + error.message);
+            console.log("process error: " + error.message);
           } else if (xhr && xhr.responseJSON) {
-            console.log('process error: ' + xhr.responseJSON.message);
+            console.log("process error: " + xhr.responseJSON.message);
           }
         },
-        cache: true
+        cache: true,
       });
     }
 
     function setvillain() {
       $.ajax({
-        url: '/api/getvillain',
+        url: "/api/getvillain",
         success: function (data) {
           villain = data;
         },
         fail: function (xhr, status, error) {
           if (error) {
-            console.log('process error: ' + error.message);
+            console.log("process error: " + error.message);
           } else if (xhr && xhr.responseJSON) {
-            console.log('process error: ' + xhr.responseJSON.message);
+            console.log("process error: " + xhr.responseJSON.message);
           }
         },
-        cache: true
+        cache: true,
       });
     }
 
@@ -87,25 +86,27 @@ let DAT = window.DAT || null;
     }
 
     function loadSound(file, soundId) {
-      createjs.Sound.registerSound('/sounds/' + file, soundId);
+      createjs.Sound.registerSound("/sounds/" + file, soundId);
     }
 
     function initbgsound() {
       if (!createjs.Sound.initializeDefaultPlugins()) {
         return;
       }
-      var audioPath = '/sounds/';
-      var sounds = [{
-        id: 'music',
-        src: 'M-GameBG.ogg'
-      }, {
-        id: 'shot',
-        src: 'shot.ogg'
-      }
+      var audioPath = "/sounds/";
+      var sounds = [
+        {
+          id: "music",
+          src: "M-GameBG.ogg",
+        },
+        {
+          id: "shot",
+          src: "shot.ogg",
+        },
       ];
 
-      createjs.Sound.alternateExtensions = ['mp3'];
-      createjs.Sound.on('fileload', handleLoad);
+      createjs.Sound.alternateExtensions = ["mp3"];
+      createjs.Sound.on("fileload", handleLoad);
       createjs.Sound.registerSounds(sounds, audioPath);
     }
 
@@ -116,55 +117,95 @@ let DAT = window.DAT || null;
       }
     }
 
-    function postStat(winner, spikes, loser, date, type) {
-      var data = {};
-      data.winner = winner;
-      data.spikes = spikes;
-      data.loser = loser;
-      data.date = date;
-      data.type = type;
+    const postStat = (winner, spikes, loser, date, type) => {
+      const data = { winner, spikes, loser, date, type };
 
-      loadSound('Game-Death.ogg', 'gamedeath');
+      loadSound("Game-Death.ogg", "gamedeath");
 
       $.ajax({
-        url: '/api/addstat',
-        type: 'POST',
-        dataType: 'json',
+        url: "/api/addstat",
+        type: "POST",
+        dataType: "json",
         data: JSON.stringify(data),
-        contentType: 'application/json',
+        contentType: "application/json",
         cache: false,
-        done: function () {
-          console.log('process complete');
+        done: () => {
+          console.log("process complete");
         },
-        success: function (response) {
-          let html = '';
-          let data = [];
-          $.each(response, function (i, item) {
-            data.push([
-              item._id.winner, item._id.type, item.spikes
-            ]);
+        success: (response) => {
+          let html = "";
+          const data = [];
+          $.each(response, (i, item) => {
+            data.push([item._id.winner, item._id.type, item.spikes]);
           });
 
           for (var i = 0; i < data.length; i++) {
-            html += '<tr><td>' + data[i][0] + '</td><td>' + data[i][1] + '</td><td>' + data[i][2] + '</td></tr>';
+            html += "<tr><td>" + data[i][0] + "</td><td>" + data[i][1] + "</td><td>" + data[i][2] + "</td></tr>";
           }
 
-          $('#toptenlist').html(
-            html
-          );
+          $("#toptenlist").html(html);
 
           // Show dominator window
           showDominatorWindow();
         },
         fail: function (xhr, status, error) {
           if (error) {
-            console.log('process error: ' + error.message);
+            console.log("process error: " + error.message);
           } else if (xhr && xhr.responseJSON) {
-            console.log('process error: ' + xhr.responseJSON.message);
+            console.log("process error: " + xhr.responseJSON.message);
           }
         },
       });
-    }
+    };
+
+    const stopMainProgress = () => {
+      $(".indeterminate").addClass("determinate").removeClass("indeterminate").css("width", "0%");
+    };
+
+    const declareWinner = () => {
+      $("#play").on("click", handlePlayClick);
+      globeObj.stopFlying();
+      stopMainProgress();
+      stopInterval();
+
+      // Determine winner and loser
+      let winner = "";
+      let loser = "";
+      let spikes = 0;
+
+      if (charactertype === "hero") {
+        winner = hero;
+        loser = villain;
+        spikes = herospikes;
+      } else {
+        winner = villain;
+        loser = hero;
+        spikes = villainspikes;
+      }
+
+      // Save to database
+      const date = new Date().toISOString();
+      postStat(winner, spikes, loser, date, charactertype);
+    };
+
+    const handlePlayClick = () => {
+      window.location.reload(true);
+    };
+
+    const characterSet = () => {
+      // express running?
+      if (isNodeRunning) {
+        const lot = getRandomArbitrary(1, 6);
+        if (oddEven(lot) === 1) {
+          character = villain;
+          charactertype = "villain";
+        } else {
+          character = hero;
+          charactertype = "hero";
+        }
+      }
+      return character === null ? false : true;
+    };
 
     function stopInterval() {
       window.clearInterval(interval);
@@ -178,71 +219,18 @@ let DAT = window.DAT || null;
       return num % 2;
     }
 
-    function stopMainProgress() {
-      $('.indeterminate').addClass('determinate').removeClass('indeterminate').css('width: 0%;');
-    }
-
-    function declareWinner() {
-      $('#play').on('click', function () {
-        window.location.reload(true);
-      });
-      globeObj.stopFlying();
-      stopMainProgress();
-      stopInterval();
-      // save to db
-      let winner = '',
-        loser = '',
-        spikes = 0;
-      if (charactertype === 'hero') {
-        winner = hero;
-        loser = villain;
-        spikes = herospikes;
-      } else {
-        winner = villain;
-        loser = hero;
-        spikes = villainspikes;
-      }
-      postStat(winner, spikes, loser, new Date(), charactertype);
-      fadeOutInterval = setInterval(function () {
-        if (volume <= 0) {
-          window.clearInterval(fadeOutInterval);
-        }
-        console.log('test');
-        volume = volume - 0.1;
-        createjs.Sound.volume = volume;
-      }, 500);
-      window.setTimeout(function () {
-        createjs.Sound.stop();
-      }, 8000);
-    }
-
-    function characterSet() {
-      // express running?
-      if (isNodeRunning) {
-        let lot = getRandomArbitrary(1, 6);
-        if (oddEven(lot) === 1) {
-          character = villain;
-          charactertype = 'villain';
-        } else {
-          character = hero;
-          charactertype = 'hero';
-        }
-      }
-      return (character === null) ? false : true;
-    }
-
     function executeMove() {
       // can get character from express?
       let characterIsSet = characterSet();
       // starting point
       let originate = [];
       if (characterIsSet === true) {
-        createjs.Sound.play('shot');
+        createjs.Sound.play("shot");
         // battle of north vs south poles
-        if (charactertype == 'villain') {
+        if (charactertype == "villain") {
           // south pole
-          originate.push(-90.0000);
-          originate.push(0.0000);
+          originate.push(-90.0);
+          originate.push(0.0);
         } else {
           // north pole
           originate.push(64.751114);
@@ -254,7 +242,7 @@ let DAT = window.DAT || null;
       }
       // ending points
       let marks = [];
-      let isOverLoaded = $('#spikeswitch').prop('checked');
+      let isOverLoaded = $("#spikeswitch").prop("checked");
       let offset = 1;
       if (isOverLoaded) {
         offset = 30;
@@ -264,14 +252,14 @@ let DAT = window.DAT || null;
         marks[i] = [];
         if (characterIsSet === true) {
           // battle of north vs south poles
-          if (charactertype == 'villain') {
+          if (charactertype == "villain") {
             // north pole
-            marks[i][0] = getRandomArbitrary(-90.0000, 90);
+            marks[i][0] = getRandomArbitrary(-90.0, 90);
             marks[i][1] = getRandomArbitrary(-147.349442, -100);
           } else {
             // south pole
-            marks[i][0] = getRandomArbitrary(-90.0000, 90);
-            marks[i][1] = getRandomArbitrary(0.0000, 50);
+            marks[i][0] = getRandomArbitrary(-90.0, 90);
+            marks[i][1] = getRandomArbitrary(0.0, 50);
           }
         } else {
           marks[i][0] = getRandomArbitrary(-90, 90);
@@ -281,10 +269,10 @@ let DAT = window.DAT || null;
       // random line color
       let color = new THREE.Color(0xffffff);
       if (characterIsSet === true) {
-        if (charactertype == 'villain') {
-          color = new THREE.Color('red');
+        if (charactertype == "villain") {
+          color = new THREE.Color("red");
         } else {
-          color = new THREE.Color('blue');
+          color = new THREE.Color("blue");
         }
       } else {
         color.setHex(Math.random() * 0xffffff);
@@ -295,81 +283,91 @@ let DAT = window.DAT || null;
       // if there is something to originate
       if (originate.length > 1 && marks.length > 0 && marks[0].length > 1) {
         globeObj.addData(originate, marks);
-        let message = (characterIsSet === true) ? character + ' attacked with ' + spikes + ' spikes!' : 'Spikes: ' + spikes;
+        let message = characterIsSet === true ? character + " attacked with " + spikes + " spikes!" : "Spikes: " + spikes;
         M.toast({
           html: message,
-          classes: 'rounded'
+          classes: "rounded",
         });
-        let overhead = (globeObj.overhead() - prevOverhead);
+        let overhead = globeObj.overhead() - prevOverhead;
         let duration = globeObj.duration();
         let percentCharge = (duration / overhead) * 1000;
-        $('#data-rows').append('<tr><td>' + spikes + '</td><td>' + overhead.toFixed(2) + '</td><td>' + duration.toFixed(2) + '</td><td>' + percentCharge.toFixed(2) + '</td></tr>');
+        $("#data-rows").append(
+          "<tr><td>" +
+            spikes +
+            "</td><td>" +
+            overhead.toFixed(2) +
+            "</td><td>" +
+            duration.toFixed(2) +
+            "</td><td>" +
+            percentCharge.toFixed(2) +
+            "</td></tr>"
+        );
         if (characterIsSet === true) {
-          let damage = (percentCharge * 5 + spikes);
-          $('#heroImage').removeClass('pulse');
-          $('#villainImage').removeClass('pulse');
-          if (charactertype == 'villain') {
+          let damage = percentCharge * 5 + spikes;
+          $("#heroImage").removeClass("pulse");
+          $("#villainImage").removeClass("pulse");
+          if (charactertype == "villain") {
             villainspikes += spikes;
             heroDamage += damage;
             let heroHealth = 100 - heroDamage;
-            $('#villainImage').addClass('pulse');
+            $("#villainImage").addClass("pulse");
             if (heroHealth > 0) {
-              $('#heroProgress').css('width', heroHealth + '%');
-              $('#heroStats').html(heroHealth.toFixed(0) + '%');
+              $("#heroProgress").css("width", heroHealth + "%");
+              $("#heroStats").html(heroHealth.toFixed(0) + "%");
             } else {
               declareWinner();
-              $('#heroProgress').css('width', '0%');
-              $('#heroStats').html('0%');
+              $("#heroProgress").css("width", "0%");
+              $("#heroStats").html("0%");
             }
           } else {
             herospikes += spikes;
             villainDamage += damage;
             let villainHealth = 100 - villainDamage;
-            $('#heroImage').addClass('pulse');
+            $("#heroImage").addClass("pulse");
             if (villainHealth > 0) {
-              $('#villainProgress').css('width', villainHealth + '%');
-              $('#villainStats').html(villainHealth.toFixed(0) + '%');
+              $("#villainProgress").css("width", villainHealth + "%");
+              $("#villainStats").html(villainHealth.toFixed(0) + "%");
             } else {
               declareWinner();
-              $('#villainProgress').css('width', '0%');
-              $('#villainStats').html('0%');
+              $("#villainProgress").css("width", "0%");
+              $("#villainStats").html("0%");
             }
           }
         }
         prevOverhead = globeObj.overhead();
         totalOverhead += overhead;
         totalDuration += duration;
-        $('#overhead').html(totalOverhead.toFixed(2));
-        $('#duration').html(totalDuration.toFixed(2));
+        $("#overhead").html(totalOverhead.toFixed(2));
+        $("#duration").html(totalDuration.toFixed(2));
         if (totalDuration <= 15) {
-          $('#duration').addClass('green').removeClass('orange').removeClass('red');
+          $("#duration").addClass("green").removeClass("orange").removeClass("red");
         } else if (totalDuration <= 30) {
-          $('#duration').addClass('orange').removeClass('green').removeClass('red');
+          $("#duration").addClass("orange").removeClass("green").removeClass("red");
         } else {
-          $('#duration').addClass('red').addClass('pulse').removeClass('green').removeClass('orange');
+          $("#duration").addClass("red").addClass("pulse").removeClass("green").removeClass("orange");
         }
         totalSpikes += spikes;
-        $('#spikes').html(totalSpikes);
+        $("#spikes").html(totalSpikes);
         if (totalSpikes <= 15) {
-          $('#spikes').addClass('green').removeClass('orange').removeClass('red');
+          $("#spikes").addClass("green").removeClass("orange").removeClass("red");
         } else if (totalSpikes <= 30) {
-          $('#spikes').addClass('orange').removeClass('green').removeClass('red');
+          $("#spikes").addClass("orange").removeClass("green").removeClass("red");
         } else {
-          $('#spikes').addClass('red').addClass('pulse').removeClass('green').removeClass('orange');
+          $("#spikes").addClass("red").addClass("pulse").removeClass("green").removeClass("orange");
         }
-        $('#runs').html(++totalRuns);
+        $("#runs").html(++totalRuns);
         let totalPercentCharge = (totalDuration / totalOverhead) * 1000;
         let charge = parseFloat(totalPercentCharge.toFixed(2));
-        $('#charge').html(charge);
-        if (charge <= 0.20) {
-          $('#charge').addClass('green').removeClass('orange').removeClass('red');
-          $('#overhead').addClass('green').removeClass('orange').removeClass('red');
-        } else if (charge <= 0.60) {
-          $('#charge').addClass('orange').removeClass('green').removeClass('red');
-          $('#overhead').addClass('orange').removeClass('green').removeClass('red');
+        $("#charge").html(charge);
+        if (charge <= 0.2) {
+          $("#charge").addClass("green").removeClass("orange").removeClass("red");
+          $("#overhead").addClass("green").removeClass("orange").removeClass("red");
+        } else if (charge <= 0.6) {
+          $("#charge").addClass("orange").removeClass("green").removeClass("red");
+          $("#overhead").addClass("orange").removeClass("green").removeClass("red");
         } else {
-          $('#charge').addClass('red').addClass('pulse').removeClass('green').removeClass('orange');
-          $('#overhead').addClass('red').addClass('pulse').removeClass('green').removeClass('orange');
+          $("#charge").addClass("red").addClass("pulse").removeClass("green").removeClass("orange");
+          $("#overhead").addClass("red").addClass("pulse").removeClass("green").removeClass("orange");
         }
       }
     }
@@ -377,19 +375,19 @@ let DAT = window.DAT || null;
     function main() {
       if (villain === null || hero === null) {
         isNodeRunning = false;
-        sceneType = 'normal';
-        villain = '';
-        hero = '';
+        sceneType = "normal";
+        villain = "";
+        hero = "";
       } else {
-        $('#villainname').html(villain);
-        $('#heroname').html(hero);
-        $('.characterbar').show();
+        $("#villainname").html(villain);
+        $("#heroname").html(hero);
+        $(".characterbar").show();
         isNodeRunning = true;
-        sceneType = 'frozen';
+        sceneType = "frozen";
       }
-      let container = document.getElementById('globe');
+      let container = document.getElementById("globe");
       globeObj = new DAT.Globe(container, {
-        sceneType: sceneType
+        sceneType: sceneType,
       });
       globeObj.startFlying();
       let count = 0;
@@ -398,7 +396,7 @@ let DAT = window.DAT || null;
           return;
         }
         let test = villain.length || hero.length || 0;
-        let rununtil = (test > 0) ? 100 : 5;
+        let rununtil = test > 0 ? 100 : 5;
         if (count > rununtil) {
           stopInterval();
           stopMainProgress();
@@ -418,30 +416,30 @@ let DAT = window.DAT || null;
       main();
     }, 1000);
 
-    $('#refresh').on('click', function () {
+    $("#refresh").on("click", function () {
       window.location.reload(true);
     });
 
-    $('#stop').on('click', function () {
+    $("#stop").on("click", function () {
       if (globeObj.isFlying()) {
         globeObj.stopFlying();
       }
     });
 
-    $('#play').on('click', function () {
+    $("#play").on("click", function () {
       if (!globeObj.isFlying()) {
         globeObj.startFlying();
       }
     });
 
-    $('#dominatorWinToggle').on('click', function () {
+    $("#dominatorWinToggle").on("click", function () {
       showDominatorWindow();
     });
 
     M.AutoInit();
-    $('select').formSelect();
+    $("select").formSelect();
 
     // set modal window
-    winnerModalWindow = M.Modal.getInstance($('#winnerModal')[0]);
+    winnerModalWindow = M.Modal.getInstance($("#winnerModal")[0]);
   }); // end of document ready
 })(jQuery); // end of jQuery name space

@@ -1,5 +1,5 @@
 /**
- * @author Daniel Penrod (Iturea) / https://github.com/Iturea
+ * @author Daniel Penrod
  * 
  * released under MIT License (MIT)
  */

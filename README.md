@@ -1,40 +1,38 @@
 # WebGL Globe
 
-<img src="https://raw.githubusercontent.com/galactic-plane/webgl-globe/master/infographic.png" alt="drawing" width="800"/>
+![WebGL Globe](https://raw.githubusercontent.com/galactic-plane/webgl-globe/master/infographic.png)
 
 ---
 
-## Github Version:
-> Runs static html assets only
+## GitHub Version
+> Runs static HTML assets only
 
-[https://galactic-plane.github.io/webgl-globe/wwwroot/index.html](https://galactic-plane.github.io/webgl-globe/wwwroot/index.html)
+[Live Demo](https://galactic-plane.github.io/webgl-globe/wwwroot/index.html)
 
-## Heroku Version:
-> Runs via node.js/express served up on heroku and stores stats via mongo atlas
+## Learn More
+WebGL Globe is a cloud-enabled (via the cloud bump map :P), mobile-ready (if you want), earth-powered HTML5/THREE.JS app.
 
-[https://frozen-basin-22700.herokuapp.com/](https://frozen-basin-22700.herokuapp.com/)
-
-<img src="https://raw.githubusercontent.com/galactic-plane/webgl-globe/master/frozenbasin.png" alt="drawing" width="800"/>
-
----
-
-## Learn More:
-
-WebGL Globe is a cloud-enabled (via the cloud bump map :P), mobile-ready (if you want), earth powered HTML5/THREE.JS app.
-
-  - jQuery
-  - three.js
-  - HTML5
-  - Materialize-CSS
+### Built With
+- jQuery
+- three.js
+- HTML5
+- Materialize-CSS
 
 ---
 
-## Clone
-Use [git](https://git-scm.com/downloads) to install webgl-globe.
+## Getting Started
 
+### Prerequisites
+Ensure you have the following installed:
+- [Node.js](https://nodejs.org/en/download/)
+- [Git](https://git-scm.com/downloads)
+
+### Clone the Repository
+Use git to clone the repository:
 ```bash
-$ git clone https://github.com/galactic-plane/webgl-globe.git
+git clone https://github.com/galactic-plane/webgl-globe.git
 ```
+
 ## Install
 In the webgl-globe directory run:
 ```bash
@@ -63,17 +61,21 @@ $ vivaldi localhost:3000
 ```javascript
 let container = document.getElementById('globe');
 let globeObj = new DAT.Globe(container);
-// random line color
+
+// Random line color
 let color = new THREE.Color(0xffffff);
 color.setHex(Math.random() * 0xffffff);
 globeObj.lineColor(color);
-// set particle color
+
+// Set particle color
 globeObj.particleColor(0x01001f);
-// starting point
+
+// Starting point
 let originate = [];
 originate.push(35.1380556);
 originate.push(-79.0075);
-// ending points
+
+// Ending points
 let marks = [];
 marks[0] = [];
 marks[0][0] = 39.445723;
