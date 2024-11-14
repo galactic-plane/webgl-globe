@@ -14,6 +14,7 @@ let THREE = window.THREE || null;
 let jQuery = window.jQuery || null;
 let M = window.M || null;
 let DAT = window.DAT || null;
+let isNode = typeof Node === "function";
 
 (function ($) {
   $(function () {
@@ -192,21 +193,6 @@ let DAT = window.DAT || null;
       window.location.reload(true);
     };
 
-    const characterSet = () => {
-      // express running?
-      if (isNodeRunning) {
-        const lot = getRandomArbitrary(1, 6);
-        if (oddEven(lot) === 1) {
-          character = villain;
-          charactertype = "villain";
-        } else {
-          character = hero;
-          charactertype = "hero";
-        }
-      }
-      return character === null ? false : true;
-    };
-
     function stopInterval() {
       window.clearInterval(interval);
     }
@@ -221,10 +207,9 @@ let DAT = window.DAT || null;
 
     function executeMove() {
       // can get character from express?
-      let characterIsSet = characterSet();
       // starting point
       let originate = [];
-      if (characterIsSet === true) {
+      if (isNode === true) {
         createjs.Sound.play("shot");
         // battle of north vs south poles
         if (charactertype == "villain") {
@@ -250,7 +235,7 @@ let DAT = window.DAT || null;
       let spikes = Math.floor(Math.random() * 20 * offset);
       for (let i = 0; i < spikes; i++) {
         marks[i] = [];
-        if (characterIsSet === true) {
+        if (isNode === true) {
           // battle of north vs south poles
           if (charactertype == "villain") {
             // north pole
@@ -268,7 +253,7 @@ let DAT = window.DAT || null;
       }
       // random line color
       let color = new THREE.Color(0xffffff);
-      if (characterIsSet === true) {
+      if (isNode === true) {
         if (charactertype == "villain") {
           color = new THREE.Color("red");
         } else {
@@ -283,7 +268,7 @@ let DAT = window.DAT || null;
       // if there is something to originate
       if (originate.length > 1 && marks.length > 0 && marks[0].length > 1) {
         globeObj.addData(originate, marks);
-        let message = characterIsSet === true ? character + " attacked with " + spikes + " spikes!" : "Spikes: " + spikes;
+        let message = isNode === true ? character + " attacked with " + spikes + " spikes!" : "Spikes: " + spikes;
         M.toast({
           html: message,
           classes: "rounded",
@@ -302,7 +287,7 @@ let DAT = window.DAT || null;
             percentCharge.toFixed(2) +
             "</td></tr>"
         );
-        if (characterIsSet === true) {
+        if (isNode === true) {
           let damage = percentCharge * 5 + spikes;
           $("#heroImage").removeClass("pulse");
           $("#villainImage").removeClass("pulse");
@@ -373,8 +358,6 @@ let DAT = window.DAT || null;
     }
 
     function main() {
-      const isNode = typeof process !== "undefined" && process.versions != null && process.versions.node != null;
-
       if (isNode) {
         $("#villainname").html(villain);
         $("#heroname").html(hero);
@@ -409,10 +392,12 @@ let DAT = window.DAT || null;
       }, 3000);
     }
 
-    // set
-    initNode(setHero);
-    initNode(setvillain);
-    initbgsound();
+    if (isNode) {
+      // set
+      initNode(setHero);
+      initNode(setvillain);
+      initbgsound();
+    }
 
     window.setTimeout(function () {
       main();
