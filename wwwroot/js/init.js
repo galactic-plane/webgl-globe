@@ -14,7 +14,7 @@ let THREE = window.THREE || null;
 let jQuery = window.jQuery || null;
 let M = window.M || null;
 let DAT = window.DAT || null;
-let isNode = typeof Node === "function";
+let isNode = false;
 
 (function ($) {
   $(function () {
@@ -36,6 +36,8 @@ let isNode = typeof Node === "function";
       charactertype = "",
       heroDamage = 0,
       villainDamage = 0;
+
+    $(".characterbar").hide();
 
     function initNode(executeCallBack) {
       var xhttp = new XMLHttpRequest();
@@ -369,6 +371,7 @@ let isNode = typeof Node === "function";
         sceneType = "normal";
         villain = "";
         hero = "";
+        $(".characterbar").hide();
       }
       let container = document.getElementById("globe");
       globeObj = new DAT.Globe(container, {
