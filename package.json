@@ -1,8 +1,8 @@
 {
   "name": "webgl-globe",
   "version": "1.0.0",
-  "description": "A study of the behavior of bezier curves connecting points on a sphere. Particle effects cycles around the curve. A spike is created and marks the point of impact. Performance is measured in the table below if your browser support that.",
-  "main": "index.js",
+  "description": "Interactive 3D Earth visualization with WebGL and Three.js, featuring bezier curves, particle effects, and performance monitoring",
+  "main": "app.js",
   "type": "module",
   "engines": {
     "node": ">=18.17.1"
@@ -19,22 +19,36 @@
     "start": "node app.js",
     "dev": "live-server wwwroot --port=3000 --host=localhost",
     "build": "echo \"Static build complete - files are ready in wwwroot directory\"",
-    "deploy": "echo \"Deploy wwwroot directory to your hosting platform\""
+    "deploy": "echo \"Deploy wwwroot directory to your hosting platform\"",
+    "serve": "npm run dev",
+    "preview": "npm run start"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Iturea/WebGLGlobe.git"
+    "url": "git+https://github.com/galactic-plane/webgl-globe.git"
   },
   "keywords": [
     "webgl",
-    "three.js"
+    "three.js",
+    "3d",
+    "earth",
+    "visualization",
+    "particle-effects",
+    "bezier-curves",
+    "interactive",
+    "globe"
   ],
   "author": "Daniel Penrod",
   "license": "MIT",
+  "files": [
+    "wwwroot/",
+    "app.js",
+    "README.md"
+  ],
   "bugs": {
-    "url": "https://github.com/Iturea/WebGLGlobe/issues"
+    "url": "https://github.com/galactic-plane/webgl-globe/issues"
   },
-  "homepage": "https://github.com/Iturea/WebGLGlobe#readme",
+  "homepage": "https://galactic-plane.github.io/webgl-globe/wwwroot/index.html",
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "eslint": "^9.14.0",
