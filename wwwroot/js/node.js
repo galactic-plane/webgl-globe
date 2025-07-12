@@ -39,8 +39,8 @@ let isNode = true;
 
     // Cache frequently used DOM elements
     let $characterbar, $heroImage, $villainImage, $heroProgress, $heroStats,
-        $villainProgress, $villainStats, $dataRows, $overhead, $duration,
-        $spikes, $runs, $charge, $villainname, $heroname, $toptenlist;
+      $villainProgress, $villainStats, $dataRows, $overhead, $duration,
+      $spikes, $runs, $charge, $villainname, $heroname, $toptenlist;
 
     $(document).ready(function() {
       // Initialize DOM element cache

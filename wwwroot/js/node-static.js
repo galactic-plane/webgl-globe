@@ -114,6 +114,7 @@ let isNode = true;
         { src: "Humm.ogg", id: "humm" },
         { src: "ToneWobble.ogg", id: "tonewobble" },
         { src: "Thunder1.ogg", id: "thunder" },
+        { src: "shot.ogg", id: "shot" },
       ];
 
       createjs.Sound.alternateExtensions = ["mp3"];
