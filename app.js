@@ -2,36 +2,6 @@
 import express from "express";
 const app = express(); // Initialize an Express application instance.
 
-// Import the Body Parser middleware to parse incoming JSON requests.
-import bodyParser from "body-parser";
-app.use(bodyParser.json()); // Use body-parser middleware to parse request bodies into JSON format.
-
-// Uncomment below to use Mongoose to connect to a MongoDB database.
-/*
-import mongoose from "mongoose";
-const connection = process.env.MongoAtlasConnection || "mongodb://localhost:27017/globewardb";
-
-// Connect to MongoDB using the provided connection string.
-mongoose
-  .connect(connection, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB connected successfully"))
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
-
-// Define the schema for the 'GlobeWar' collection, representing a battle.
-const globeWarSchema = new mongoose.Schema({
-  winner: { type: String, required: true }, // The name of the winner.
-  spikes: { type: Number, required: true, min: 0 }, // The number of spikes (an indicator).
-  loser: { type: String, required: true }, // The name of the loser.
-  date: { type: Date, required: true }, // Date of the event.
-  type: { type: String, required: true }, // Type/category of the battle.
-});
-
-// Create a model to interact with the 'GlobeWar' collection.
-const GlobeWar = mongoose.model("GlobeWar", globeWarSchema);
-*/
-
 // Import the 'path' module to handle file and directory paths.
 import path from "path";
 const __dirname = path.resolve(); // Get the root directory of the current module.
@@ -114,58 +84,18 @@ app.get("/api/getvillain", function (req, res) {
   res.send(randomVillain); // Respond with the randomly selected villain.
 });
 
-// API endpoint to add a battle stat.
+// API endpoint to add a battle stat (simplified for local development).
 app.post("/api/addstat", function (req, res) {
-  /*
-  // Create a new instance of the 'GlobeWar' model with data from the request body.
-  const globewar = new GlobeWar({
-    winner: req.body.winner, // Winner of the battle.
-    spikes: req.body.spikes, // Number of spikes associated with the battle.
-    loser: req.body.loser, // Loser of the battle.
-    date: req.body.date, // Date of the battle.
-    type: req.body.type, // Type/category of the battle.
-  });
-  
-  // Save the new battle record to MongoDB.
-  globewar.save();
-  
-  // Group the battles by winner and type, and sort them by spikes in descending order.
-  GlobeWar.aggregate(
-    [
-      {
-        $group: {
-          _id: {
-            winner: "$winner",
-            type: "$type",
-          },
-          spikes: {
-            $sum: "$spikes",
-          },
-        },
-      },
-      {
-        $sort: {
-          spikes: -1, // Sort by spikes in descending order.
-        },
-      },
-    ],
-    function (err, data) {
-      // Close the database connection.
-      mongoose.connection.close();
-      // Send the result back to the client.
-      if (err) {
-        console.log(err);
-        res.send("error");
-      } else {
-        res.send(data); // Respond with the aggregated data.
-      }
-    }
-  ).limit(1000); // Limit the result to 1000 entries.
-  */
+  // For static deployment, this endpoint returns empty array
+  // In local development, you could add local storage or file-based storage
+  console.log("Battle stat received (not persisted in static mode)");
+  res.send([]); // Return empty array since we're not persisting data
 });
 
-// Start the server, listening on the specified port (use Heroku's port or default to 3000 for local development).
-app.listen(process.env.PORT || 3000, function () {
-  console.log("started `node ./app.js");
-  console.log("listening at: http://localhost:3000/node.html"); // Log the server listening URL.
+// Start the server for local development.
+const PORT = 3000;
+app.listen(PORT, function () {
+  console.log(`WebGL Globe server started on port ${PORT}`);
+  console.log(`Visit: http://localhost:${PORT}/index.html`);
+  console.log(`Or: http://localhost:${PORT}/node.html`);
 });

@@ -4,13 +4,13 @@
 
 ---
 
-## GitHub Version
-> Runs static HTML assets only
+## Static Version
+> Now runs as static HTML assets only - no server required!
 
 [Live Demo](https://galactic-plane.github.io/webgl-globe/wwwroot/index.html)
 
 ## Learn More
-WebGL Globe is a cloud-enabled (via the cloud bump map :P), mobile-ready (if you want), earth-powered HTML5/THREE.JS app.
+WebGL Globe is a mobile-ready, earth-powered HTML5/THREE.JS app featuring interactive 3D globe visualization with particle effects.
 
 ### Built With
 - jQuery
@@ -22,38 +22,74 @@ WebGL Globe is a cloud-enabled (via the cloud bump map :P), mobile-ready (if you
 
 ## Getting Started
 
-### Prerequisites
-Ensure you have the following installed:
+### For Static Hosting (Recommended)
+The project now works as a static website. No server setup required!
+
+1. **GitHub Pages**: Enable GitHub Pages to serve from root directory
+2. **Local Development**: Use any static file server:
+   ```bash
+   # Using Python
+   cd wwwroot
+   python -m http.server 8000
+   
+   # Using live-server (with auto-reload)
+   npm install
+   npm run dev
+   ```
+
+### For Node.js Development (Optional)
+If you want to run the Express server locally:
+
+#### Prerequisites
 - [Node.js](https://nodejs.org/en/download/)
 - [Git](https://git-scm.com/downloads)
 
-### Clone the Repository
+#### Clone the Repository
 Use git to clone the repository:
 ```bash
 git clone https://github.com/galactic-plane/webgl-globe.git
+cd webgl-globe
 ```
 
-## Install
-In the webgl-globe directory run:
+## Quick Start
+
+### Static Deployment (Recommended)
+1. **GitHub Pages**: 
+   - Push to GitHub and enable Pages in repository settings
+   - Your site will be available at `https://yourusername.github.io/webgl-globe/wwwroot/`
+
+2. **Local Static Server**:
+   ```bash
+   # Using live-server (with auto-reload)
+   npm install
+   npm run dev
+   
+   # Or using Python
+   cd wwwroot
+   python -m http.server 8000
+   ```
+
+### Node.js Development Server (Optional)
 ```bash
-$ npm install
+npm install
+npm start
 ```
+
+Visit: `http://localhost:3000/index.html` or `http://localhost:3000/node.html`
+
 ---
-## Run Local 
-[Node.js](https://nodejs.org/en/download/) :zap: [Express](https://expressjs.com/en/starter/installing.html) :zap: [Nodemon](https://www.npmjs.com/package/nodemon)
-```bash
-$ nodemon app.js
-```
 
-## Run Local from Docker
-> Using the vivaldi browser (replace with your browser of choice)
-```bash
-$ docker pull dayafter/webgl-globe:latest
+## File Structure
+- `wwwroot/` - Static website files (GitHub Pages ready)
+- `wwwroot/index.html` - Main globe visualization
+- `wwwroot/node.html` - Interactive hero vs villain battle
+- `app.js` - Optional Express server for local development
 
-$ docker run -dp 3000:3000 dayafter/webgl-globe
-
-$ vivaldi localhost:3000
-```
+## Recent Changes
+- ✅ Removed Heroku dependencies (Procfile, etc.)
+- ✅ Made project GitHub Pages compatible
+- ✅ Created static version of interactive features
+- ✅ Simplified deployment process
 ---
 
 ## Usage
