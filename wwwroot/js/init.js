@@ -37,12 +37,37 @@ let isNode = false;
       heroDamage = 0,
       villainDamage = 0;
 
+    // Cache frequently used DOM elements
+    let $characterbar, $heroImage, $villainImage, $heroProgress, $heroStats,
+        $villainProgress, $villainStats, $dataRows, $overhead, $duration,
+        $spikes, $runs, $charge, $villainname, $heroname, $toptenlist;
+
+    $(document).ready(function() {
+      // Initialize DOM element cache
+      $characterbar = $(".characterbar");
+      $heroImage = $("#heroImage");
+      $villainImage = $("#villainImage");
+      $heroProgress = $("#heroProgress");
+      $heroStats = $("#heroStats");
+      $villainProgress = $("#villainProgress");
+      $villainStats = $("#villainStats");
+      $dataRows = $("#data-rows");
+      $overhead = $("#overhead");
+      $duration = $("#duration");
+      $spikes = $("#spikes");
+      $runs = $("#runs");
+      $charge = $("#charge");
+      $villainname = $("#villainname");
+      $heroname = $("#heroname");
+      $toptenlist = $("#toptenlist");
+    });
+
     $(".characterbar").hide();
 
     function initNode(executeCallBack) {
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
+        if (this.readyState === 4 && this.status === 200) {
           executeCallBack();
         }
       };
@@ -196,8 +221,19 @@ let isNode = false;
     };
 
     function stopInterval() {
-      window.clearInterval(interval);
+      if (interval) {
+        window.clearInterval(interval);
+        interval = null;
+      }
     }
+
+    // Add cleanup on page unload to prevent memory leaks
+    $(window).on('beforeunload', function() {
+      stopInterval();
+      if (globeObj && typeof globeObj.DestroyObject === 'function') {
+        globeObj.DestroyObject();
+      }
+    });
 
     function getRandomArbitrary(min, max) {
       return Math.floor(Math.random() * (max - min) + min);
@@ -208,13 +244,24 @@ let isNode = false;
     }
 
     function executeMove() {
-      // can get character from express?
+      // Ensure character and charactertype are properly set
+      if (isNode === true && (!character || !charactertype)) {
+        // Alternate between hero and villain for each move
+        if (Math.random() > 0.5) {
+          character = hero;
+          charactertype = "hero";
+        } else {
+          character = villain;
+          charactertype = "villain";
+        }
+      }
+      
       // starting point
       let originate = [];
       if (isNode === true) {
         createjs.Sound.play("shot");
         // battle of north vs south poles
-        if (charactertype == "villain") {
+        if (charactertype === "villain") {
           // south pole
           originate.push(-90.0);
           originate.push(0.0);
@@ -239,7 +286,7 @@ let isNode = false;
         marks[i] = [];
         if (isNode === true) {
           // battle of north vs south poles
-          if (charactertype == "villain") {
+          if (charactertype === "villain") {
             // north pole
             marks[i][0] = getRandomArbitrary(-90.0, 90);
             marks[i][1] = getRandomArbitrary(-147.349442, -100);
@@ -256,7 +303,7 @@ let isNode = false;
       // random line color
       let color = new THREE.Color(0xffffff);
       if (isNode === true) {
-        if (charactertype == "villain") {
+        if (charactertype === "villain") {
           color = new THREE.Color("red");
         } else {
           color = new THREE.Color("blue");
@@ -291,16 +338,18 @@ let isNode = false;
         );
         if (isNode === true) {
           let damage = percentCharge * 5 + spikes;
-          $("#heroImage").removeClass("pulse");
-          $("#villainImage").removeClass("pulse");
-          if (charactertype == "villain") {
+          if ($heroImage && $villainImage) {
+            $heroImage.removeClass("pulse");
+            $villainImage.removeClass("pulse");
+          }
+          if (charactertype === "villain") {
             villainspikes += spikes;
             heroDamage += damage;
             let heroHealth = 100 - heroDamage;
-            $("#villainImage").addClass("pulse");
+            if ($villainImage) $villainImage.addClass("pulse");
             if (heroHealth > 0) {
-              $("#heroProgress").css("width", heroHealth + "%");
-              $("#heroStats").html(heroHealth.toFixed(0) + "%");
+              if ($heroProgress) $heroProgress.css("width", heroHealth + "%");
+              if ($heroStats) $heroStats.html(heroHealth.toFixed(0) + "%");
             } else {
               declareWinner();
               $("#heroProgress").css("width", "0%");

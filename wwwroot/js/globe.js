@@ -113,7 +113,9 @@
 
       controls.dollyIn(1.2);
 
-      container.appendChild(renderer.domElement);
+      if (container && renderer.domElement) {
+        container.appendChild(renderer.domElement);
+      }
     }
 
     function render() {
@@ -623,6 +625,28 @@
       }
 
       return 0;
+    };
+
+    // Add cleanup method to prevent memory leaks
+    this.DestroyObject = function() {
+      if (renderer) {
+        renderer.dispose();
+      }
+      if (scene) {
+        // Clean up scene objects
+        scene.traverse(function(child) {
+          if (child.geometry) {
+            child.geometry.dispose();
+          }
+          if (child.material) {
+            if (child.material.map) child.material.map.dispose();
+            child.material.dispose();
+          }
+        });
+      }
+      if (controls) {
+        controls.dispose();
+      }
     };
   };
 })(this);
